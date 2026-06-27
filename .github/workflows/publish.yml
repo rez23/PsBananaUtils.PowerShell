@@ -3,50 +3,29 @@ name: Test & Publish to PowerShell Gallery
 on:
   push:
     tags:
-      - 'v*'   # Pubblica solo quando fai un tag tipo v1.0.0
+      - "v*" # Pubblica solo quando fai un tag tipo v1.0.0
+
+#  workflow_dispatch:
+#    inputs:
+#      modulePath:
+#        description: "Provide the module path that includes .psd1"
+#        required: true
+#      NuGetApiKey:
+#        description: "Provide NuGetApiKey for your profile in PSGallery."
+#        required: true
 
 jobs:
-  build-test-publish:
-    runs-on: ubuntu-latest
-
+  publish_module:
+    # The type of runner that the job will run on
+    runs-on:
+      windows-latest
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install PowerShell
-        uses: PowerShell/PowerShell-For-GitHub-Actions@v2
-
-      - name: Install PSResourceGet
-        shell: pwsh
-        run: |
-          Install-Module Microsoft.PowerShell.PSResourceGet -Force
-
-      - name: Install module locally (from source)
-        shell: pwsh
-        run: |
-          Install-PSResource -Path "./PsBananaUtils" -Scope CurrentUser -Force
-
-      - name: Import module
-        shell: pwsh
-        run: |
-          Import-Module PsBananaUtils -Force
-          Get-Command -Module PsBananaUtils
-
-      - name: Run tests (Pester)
-        shell: pwsh
-        run: |
-          if (Test-Path "./Tests") {
-            Install-PSResource Pester -Scope CurrentUser -Force
-            Invoke-Pester -Path "./Tests" -CI
-          } else {
-            Write-Host "No tests folder found, skipping Pester tests."
-          }
-
-      - name: Publish module
-        if: success()   # Pubblica solo se i test sono passati
-        shell: pwsh
-        run: |
-          Publish-PSResource `
-            -Path "./PsBananaUtils" `
-            -Repository "PSGallery" `
-            -ApiKey "${{ secrets.PowerShellGalleryApiKey }}"
+      - name: Publish module on PsGallery
+        uses: aammirmirza/Publish2PSGallery@PSGallery_v2
+        with:
+          NuGetApiKey: ${{ secrets.PowerShellGalleryApiKey }}
+          modulePath: ./
