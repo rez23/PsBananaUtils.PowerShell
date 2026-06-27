@@ -20,9 +20,13 @@ function Get-PathFromCommand {
     param (
         [Parameter(Mandatory = $true, Position = 0)]
         [Alias('Command')]
-        [string]$Cmd
+        [string]$Cmd,
+        [switch]$All
     )
 
-    $commandInfo = Get-Command -Name $Cmd -ErrorAction Stop
-    $commandInfo.Path
+    if ($All) {
+        Get-Command $Cmd -ErrorAction Stop -All | Select-Object -Property Source
+    } else {
+        Get-Command $Cmd -ErrorAction Stop | Select-Object -Property Source
+    }
 }
