@@ -1,0 +1,52 @@
+name: Test & Publish to PowerShell Gallery
+
+on:
+  push:
+    tags:
+      - 'v*'   # Pubblica solo quando fai un tag tipo v1.0.0
+
+jobs:
+  build-test-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install PowerShell
+        uses: PowerShell/PowerShell-For-GitHub-Actions@v2
+
+      - name: Install PSResourceGet
+        shell: pwsh
+        run: |
+          Install-Module Microsoft.PowerShell.PSResourceGet -Force
+
+      - name: Install module locally (from source)
+        shell: pwsh
+        run: |
+          Install-PSResource -Path "./PsBananaUtils" -Scope CurrentUser -Force
+
+      - name: Import module
+        shell: pwsh
+        run: |
+          Import-Module PsBananaUtils -Force
+          Get-Command -Module PsBananaUtils
+
+      - name: Run tests (Pester)
+        shell: pwsh
+        run: |
+          if (Test-Path "./Tests") {
+            Install-PSResource Pester -Scope CurrentUser -Force
+            Invoke-Pester -Path "./Tests" -CI
+          } else {
+            Write-Host "No tests folder found, skipping Pester tests."
+          }
+
+      - name: Publish module
+        if: success()   # Pubblica solo se i test sono passati
+        shell: pwsh
+        run: |
+          Publish-PSResource `
+            -Path "./PsBananaUtils" `
+            -Repository "PSGallery" `
+            -ApiKey "${{ secrets.PowerShellGalleryApiKey }}"
