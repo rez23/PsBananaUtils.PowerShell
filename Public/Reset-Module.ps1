@@ -8,6 +8,20 @@ $Script:TestValidPath = {
     return $?
 }
 
+<#
+.SYNOPSIS
+    Resets a PowerShell module.
+
+.DESCRIPTION
+    This function unloads and reloads a specified PowerShell module.
+    If no module name is provided, it resets all loaded modules.
+
+.PARAMETER Name
+    The name of the module to reset.
+
+.PARAMETER Quiet
+    If specified, suppresses verbose output.
+#>
 function Reset-Module {
     param(
         [Parameter(Mandatory = $false, Position = 0, ValueFromPipelineByPropertyName = $true)]

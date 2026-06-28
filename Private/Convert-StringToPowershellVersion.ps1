@@ -1,3 +1,12 @@
+<#
+.SYNOPSIS
+    Converts a string representation of a PowerShell version to a PowerShellVersion object.
+.DESCRIPTION
+    This class represents a PowerShell version and provides methods to convert a string 
+    representation of a PowerShell version to a PowerShellVersion object.
+    The Convert-FromStringToPowerShellVersion function takes a string representation of a
+    PowerShell version and returns a PowerShellVersion object.
+#>
 class PowerShellVersion {
     [int]$Major
     [int]$Minor
@@ -22,6 +31,24 @@ class PowerShellVersion {
     }
 }
 
+<#
+.SYNOPSIS
+    Converts a string representation of a PowerShell version to a PowerShellVersion object.
+.DESCRIPTION
+    This function takes a string representation of a PowerShell version and returns a PowerShellVersion object.
+.PARAMETER PwshPath
+    The string representation of the PowerShell version to convert.
+.PARAMETER Major
+    If specified, returns only the Major version number.
+.PARAMETER Minor
+    If specified, returns only the Minor version number.
+.PARAMETER Build
+    If specified, returns only the Build version number.
+.PARAMETER Revision
+    If specified, returns only the Revision version number.
+.PARAMETER Exact
+    If specified, returns the exact version string as extracted from the input string.
+#>
 function Convert-FromStringToPowerShellVersion {
     param (
         [Parameter(Mandatory = $true, Position = 0)]

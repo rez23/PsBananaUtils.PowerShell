@@ -10,7 +10,7 @@ text pattern.
 Text to search inside command history.
 
 .EXAMPLE
-./Find-PowershellHistory -Pattern "git"
+Find-PowershellHistory -Pattern "git"
 
 Lists history entries that contain "git".
 #>
