@@ -28,7 +28,7 @@ Here a list of the main commands from this module:
     `Invoke-PowerShellCustom` also support user defined 
 
     ```powershell
-    $SomeInputObject | Invoke-PowerShellCustom -PsCustomPath ".\Path\To\pwsh.exe" {Start-CmdletNotCompatibleWithLegacyPowerShell} | ? {
+    $SomeInputObject | Invoke-PowerShellCustom -PsCustomPath ".\Path\To\pwsh.exe" -Command {Start-CmdletNotCompatibleWithLegacyPowerShell} | ? {
         # this is perfectly tollerated becouse the Invoke-PowerShellCustom produce a serialized valid object
         $_.MyProps -match "MyString"
     }
